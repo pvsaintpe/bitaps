@@ -14,6 +14,7 @@
             "email": "pvsaintpe@mail.ru"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
         "phpdocumentor/phpdocumentor": "v2.9.0"
     },
