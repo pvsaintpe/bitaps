@@ -11,7 +11,7 @@ use bitaps\base\Object;
 class TransactionResult extends Object
 {
     /**
-     * @var
+     * @var string
      */
     public $tx_hash;
 }

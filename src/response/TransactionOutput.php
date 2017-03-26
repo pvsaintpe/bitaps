@@ -11,7 +11,7 @@ class TransactionOutput extends Object
     public $address;
 
     /**
-     * @var Script[]
+     * @var \bitaps\response\Script[]
      */
     public $script;
 }

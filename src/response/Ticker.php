@@ -9,7 +9,7 @@ class Ticker extends Object
      public $usd;
 
     /**
-     * @var FxRate[]
+     * @var \bitaps\response\FxRate[]
      */
      public $fx_rates;
 

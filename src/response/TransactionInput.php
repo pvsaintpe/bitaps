@@ -37,17 +37,17 @@ class TransactionInput extends Object
     public $address;
 
     /**
-     * @var Script[]
+     * @var \bitaps\response\Script[]
      */
     public $script;
 
     /**
-     * @var Script[]
+     * @var \bitaps\response\Script[]
      */
     public $sig_script;
 
     /**
-     * @var Script[]
+     * @var \bitaps\response\Script[]
      */
     public $redeem_script;
 }

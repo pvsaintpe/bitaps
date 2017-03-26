@@ -11,12 +11,12 @@ use bitaps\base\Object;
 class TransactionRawResult extends Object
 {
     /**
-     * @var
+     * @var string
      */
     public $hash;
 
     /**
-     * @var
+     * @var string
      */
     public $hex;
 

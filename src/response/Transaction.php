@@ -15,12 +15,12 @@ class Transaction extends Object
     public $timestamp;
 
     /**
-     * @var TransactionInput[]
+     * @var \bitaps\response\TransactionInput[]
      */
     public $inputs;
 
     /**
-     * @var TransactionOutput[]
+     * @var \bitaps\response\TransactionOutput[]
      */
     public $outputs;
 

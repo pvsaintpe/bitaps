@@ -23,10 +23,11 @@ class Object
                 continue;
             }
 
-            if (!($tag = $doc->getTagsByName('var'))) {
+            /** @var DocBlock\Tag\VarTag $tag */
+            if (!($tags = $doc->getTagsByName('var'))) {
                 continue;
             }
-
+            $tag = $tags[0];
             $type = $tag->getType();
 
             if (strpos($type, '[]') !== false) {
