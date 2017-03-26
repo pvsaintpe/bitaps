@@ -6,7 +6,7 @@
         "bitcoin",
         "api"
     ],
-    "type": "bitaps-extension",
+    "type": "yii2-extension",
     "license": "MIT",
     "authors": [
         {
@@ -23,5 +23,5 @@
             "bitaps\\": "src/"
         }
     },
-    "version": "1.0.2"
+    "version": "1.0.3"
 }
