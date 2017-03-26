@@ -1,22 +1,32 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: pveselov
- * Date: 26.03.17
- * Time: 16:07
- */
 
-namespace api\components;
+namespace bitaps;
 
-use backend\helpers\Html;
-use Yii;
+use bitaps\response\Address;
+use bitaps\response\AddressTransaction;
+use bitaps\response\Block;
+use bitaps\response\BLockSize;
+use bitaps\response\BlockTime;
+use bitaps\response\BlockTransaction;
+use bitaps\response\Cheque;
+use bitaps\response\Difficulty;
+use bitaps\response\Fee;
+use bitaps\response\HashRate;
+use bitaps\response\QrCode;
+use bitaps\response\RedeemCode;
+use bitaps\response\SmartContract;
+use bitaps\response\Ticker;
+use bitaps\response\Transaction;
+use bitaps\response\TransactionRawResult;
+use bitaps\response\TransactionResult;
+use bitaps\response\TxRate;
 
 /**
  * Class BitAps
  *
  * @see https://bitaps.com/ru/api
  *
- * @package api\components
+ * @package bitaps\components
  */
 class BitAps
 {
@@ -39,22 +49,6 @@ class BitAps
     CONST AMOUNT_LIMIT = 0.0003;
 
     /**
-     * @return array
-     */
-    private function getErrors()
-    {
-        return [
-            '200' => Yii::t('errors', 'Запрос успешно выполнен'),
-            '400' => Yii::t('errors', 'Неверный запрос'),
-            '401' => Yii::t('errors', 'Запрос не авторизован'),
-            '402' => Yii::t('errors', 'Ошибочный запрос'),
-            '403' => Yii::t('errors', 'Запрещено'),
-            '404' => Yii::t('errors', 'Ресурс не найден'),
-            '50x' => Yii::t('errors', 'Ошибка сервера'),
-        ];
-    }
-
-    /**
      * @param string $url
      * @param array $params []
      * @param array|boolean $post false
@@ -64,7 +58,7 @@ class BitAps
      *
      * @return mixed
      */
-    private function getResponse($url, $params = [], $post = false)
+    public static function getResponse($url, $params = [], $post = false)
     {
         $url .= (($queryString = http_build_query($params)) ? '?' . $queryString : '');
 
@@ -103,20 +97,17 @@ class BitAps
      * Уровень комиссии сети (Опциональное поле, по умолчанию low)
      * @param string [fee_level] high|medium|low
      *
-     * @return array
-     * @example array(
-     *  'address'        @Bitcoin address to receive payments
-     *  'payment_code'   @PaymentCode Code for sending payments
-     *  'invoice'        @Invoice to view payments and transactions
-     * )
+     * @return SmartContract
      */
-    public function createPaymentSmartContract($callback, $post, $confirmations = 3, $fee_level = 'low')
+    public static function createPaymentSmartContract($callback, $post, $confirmations = 3, $fee_level = 'low')
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/create/payment/smartcontract/" . urlencode($callback),
             compact('confirmations', 'fee_level'),
             $post
         );
+
+        return new SmartContract($response);
     }
 
     /**
@@ -134,19 +125,16 @@ class BitAps
      * Уровень комиссии сети (Опциональное поле, по умолчанию low)
      * @param string [fee_level] high|medium|low
      *
-     * @return mixed
-     * @example array(
-     *  'address'        @Bitcoin address to receive payments
-     *  'payment_code'   @PaymentCode Code for sending payments
-     *  'invoice'        @Invoice to view payments and transactions
-     * )
+     * @return SmartContract
      */
-    public function createPaymentAddress($payout_address, $callback, $confirmations = 3, $fee_level = 'low')
+    public static function createPaymentAddress($payout_address, $callback, $confirmations = 3, $fee_level = 'low')
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/create/payment/{$payout_address}/" . urlencode($callback),
             compact('confirmations', 'fee_level')
         );
+
+        return new SmartContract($response);
     }
 
     /**
@@ -155,19 +143,16 @@ class BitAps
      * Число принятых подтверждений платежа в сети Биткоин (опциональное поле, по умолчанию - 3)
      * @param integer [confirmations] 0-10
      *
-     * @return mixed
-     * @example array(
-     *  'address'        @Bitcoin address to receive payments
-     *  'redeem_code'    @Redeem Code for sending payments
-     *  'invoice'        @Invoice to view payments and transactions
-     * )
+     * @return Cheque
      */
-    public function createRedeemCode($confirmations = 3)
+    public static function createCheque($confirmations = 3)
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/create/redeemcode",
             compact('confirmations')
         );
+
+        return new Cheque($response);
     }
 
     /**
@@ -176,21 +161,17 @@ class BitAps
      * Код чека (Redeem Code)
      * @param string $redeemcode
      *
-     * @return array
-     * @example array(
-     *  'address',
-     *  'balance',
-     *  'pending_balance',
-     *  'paid_out'
-     * )
+     * @return RedeemCode
      */
-    public function getRedeemCodeInfo($redeemcode)
+    public static function getRedeemCode($redeemcode)
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/get/redeemcode/info",
             [],
             compact('redeemcode')
         );
+
+        return new RedeemCode($response);
     }
 
     /**
@@ -212,18 +193,17 @@ class BitAps
      * Если этот параметр присутствует, fee_level будет проигнорирован.
      * @param float|boolean $custom_fee false
      *
-     * @return array
-     * @example array(
-     *  'tx_hash'
-     * )
+     * @return TransactionResult
      */
-    public function useRedeemCode($redeemcode, $address, $amount, $fee_level = 'low', $custom_fee = false)
+    public static function useRedeemCode($redeemcode, $address, $amount, $fee_level = 'low', $custom_fee = false)
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/use/redeemcode",
             [],
             compact('redeemcode', 'address', 'amount', 'fee_level', 'custom_fee')
         );
+
+        return new TransactionResult($response);
     }
 
     /**
@@ -241,20 +221,18 @@ class BitAps
      * уровень комиссии сети, опциональное поле, по умолчанию = "low"
      * @param string $fee_level high|medium|low
      *
-     * @return array
-     * @example array(
-     *  'tx_hash'
-     * )
+     * @return TransactionResult
      */
-    public function useRedeemCodeList($redeemcode, $payment_list, $data = null, $fee_level = 'low')
+    public static function useRedeemCodeList($redeemcode, $payment_list, $data = null, $fee_level = 'low')
     {
         $data = bin2hex($data);
-
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/use/redeemcode/list",
             [],
             compact('redeemcode', 'payment_list', 'data', 'fee_level')
         );
+
+        return new TransactionResult($response);
     }
 
     /**
@@ -263,11 +241,13 @@ class BitAps
      * Хэш транзакции
      * @param string $tx_hash
      *
-     * @return mixed
+     * @return Transaction
      */
-    public function getTransaction($tx_hash)
+    public static function getTransaction($tx_hash)
     {
-        return $this->getResponse("https://bitaps.com/api/transaction/{$tx_hash}");
+        $response = static::getResponse("https://bitaps.com/api/transaction/{$tx_hash}");
+
+        return new Transaction($response);
     }
 
     /**
@@ -276,15 +256,13 @@ class BitAps
      * Хэш транзакции
      * @param string $tx_hash
      *
-     * @return mixed
-     * @example array (
-     *   'hash',
-     *   'hex'
-     * )
+     * @return TransactionRawResult
      */
-    public function getRawTransaction($tx_hash)
+    public static function getRawTransaction($tx_hash)
     {
-        return $this->getResponse("https://bitaps.com/api/raw/transaction/{$tx_hash}");
+        $response = static::getResponse("https://bitaps.com/api/raw/transaction/{$tx_hash}");
+
+        return new TransactionRawResult($response);
     }
 
     /**
@@ -293,26 +271,13 @@ class BitAps
      * Сжатый или несжатый адрес.
      * @param string $address
      *
-     * @return mixed
-     * @example array(
-     *   'balance',
-     *   'confirmed_balance',
-     *   'received',
-     *   'sent',
-     *   'pending',
-     *   'multisig_received',
-     *   'multisig_sent',
-     *   'tx_received',
-     *   'tx_sent',
-     *   'tx_multisig_received',
-     *   'tx_multisig_sent',
-     *   'tx_unconfirmed',
-     *   'tx_invalid'
-     * )
+     * @return Address
      */
-    public function getAddress($address)
+    public static function getAddress($address)
     {
-        return $this->getResponse("https://bitaps.com/api/address/" . $address);
+        $response = static::getResponse("https://bitaps.com/api/address/" . $address);
+
+        return new Address($response);
     }
 
     /**
@@ -335,106 +300,95 @@ class BitAps
      * опциональное поле, transactions status, По умолчанию all
      * @param string $status
      *
-     * @return mixed
-     * @example [
-     *      [
-     *          'timestamp',
-     *          'hash',
-     *          'data',
-     *          'type',
-     *          'status',
-     *          'confirmations',
-     *          'block',
-     *          'amount'
-     *      ],
-     *      ...
-     * ]
+     * @return AddressTransaction[]
      */
-    public function getAddressTransactions($address, $offset = 0, $type = 'all', $status = 'all')
+    public static function getAddressTransactions($address, $offset = 0, $type = 'all', $status = 'all')
     {
-        return $this->getResponse(
+        $response = static::getResponse(
             "https://bitaps.com/api/address/transactions/{$address}/{$offset}/{$type}/{$status}"
         );
+
+        $result = [];
+        if ($response && is_array($response)) {
+            foreach ($response as $item) {
+                $result[] = new AddressTransaction($item);
+            }
+            return $result;
+        } else {
+            return $response;
+        }
     }
 
     /**
      * Получить текущую сложность Биткоин сети
      *
-     * @return mixed
-     * @example array (
-     *  'difficulty'
-     * )
+     * @return Difficulty
      */
-    public function getDifficulty()
+    public static function getDifficulty()
     {
-        return $this->getResponse("https://bitaps.com/api/difficulty");
+        $response = static::getResponse("https://bitaps.com/api/difficulty");
+
+        return new Difficulty($response);
     }
 
     /**
      * Получить хэшрейт Биткоин сети за последние 24 часа
      *
-     * @return mixed
-     * @example array (
-     *  'hashrate'
-     * )
+     * @return HashRate
      */
-    public function getHashRate()
+    public static function getHashRate()
     {
-        return $this->getResponse("https://bitaps.com/api/hashrate");
+        $response = static::getResponse("https://bitaps.com/api/hashrate");
+
+        return new HashRate($response);
     }
 
     /**
      * Получить среднее время выхода блока за последние 24 часа
      *
-     * @return mixed
-     * @example array (
-     *  'blocktime'
-     * )
+     * @return BlockTime
      */
-    public function getBlockTime()
+    public static function getBlockTime()
     {
-        return $this->getResponse("https://bitaps.com/api/blocktime");
+        $response = static::getResponse("https://bitaps.com/api/blocktime");
+
+        return new BlockTime($response);
     }
 
     /**
      * Получить средний размер блока за последние 24 часа
      *
-     * @return mixed
-     * @example array (
-     *  'blocksize'
-     * )
+     * @return BLockSize
      */
-    public function getBlockSize()
+    public static function getBlockSize()
     {
-        return $this->getResponse("https://bitaps.com/api/blocksize");
+        $response = static::getResponse("https://bitaps.com/api/blocksize");
+
+        return new BLockSize($response);
     }
 
     /**
      * Получить среднее количество транзакций в секунду за последние 24 часа
      *
-     * @return mixed
-     * @example array (
-     *  'txrate'
-     * )
+     * @return TxRate
      */
-    public function getTxRate()
+    public static function getTxRate()
     {
-        return $this->getResponse("https://bitaps.com/api/txrate");
+        $response = static::getResponse("https://bitaps.com/api/txrate");
+
+        return new TxRate($response);
     }
 
     /**
      * Получить три варианта стоимости комиссии сети
      *
-     * @return mixed
-     * @example array (
-     *  'high',
-     *  'medium',
-     *  'low'
-     * )
+     * @return Fee
      */
-    public function getFee()
+    public static function getFee()
     {
-        return $this->getResponse("https://bitaps.com/api/fee");
+        $response = static::getResponse("https://bitaps.com/api/fee");
+
+        return new Fee($response);
     }
 
     /**
@@ -443,51 +397,25 @@ class BitAps
      * Номер блока или хэш блока в блокчейн сети
      * @param integer|string $block
      *
-     * @return mixed
-     * @example array(
-     *   'height',
-     *   'hash',
-     *   'previuos_block_hash',
-     *   'next_block_hash',
-     *   'merkleroot',
-     *   'coinbase',
-     *   'miner',
-     *   'timestamp',
-     *   'version',
-     *   'transactions',
-     *   'size',
-     *   'bits',
-     *   'nonce'
-     * )
+     * @return Block
      */
-    public function getBlock($block)
+    public static function getBlock($block)
     {
-        return $this->getResponse("https://bitaps.com/api/block/{$block}");
+        $response = static::getResponse("https://bitaps.com/api/block/{$block}");
+
+        return new Block($response);
     }
 
     /**
      * Получить информацию о последнем блоке
      *
-     * @return mixed
-     * @example array(
-     *   'height',
-     *   'hash',
-     *   'previuos_block_hash',
-     *   'next_block_hash',
-     *   'merkleroot',
-     *   'coinbase',
-     *   'miner',
-     *   'timestamp',
-     *   'version',
-     *   'transactions',
-     *   'size',
-     *   'bits',
-     *   'nonce'
-     * )
+     * @return Block
      */
-    public function getBlockLatest()
+    public static function getBlockLatest()
     {
-        return $this->getResponse("https://bitaps.com/api/block/latest");
+        $response = static::getResponse("https://bitaps.com/api/block/latest");
+
+        return new Block($response);
     }
 
     /**
@@ -496,15 +424,21 @@ class BitAps
      * Номер блока или хэш блока в блокчейн сети
      * @param integer|string $block
      *
-     * @return mixed
-     * @example [
-     *   ['transaction', 'block_data_hex', 'amount}'],
-     *   ...
-     * ]
+     * @return BlockTransaction[]
      */
-    public function getBlockTransactions($block)
+    public static function getBlockTransactions($block)
     {
-        return $this->getResponse("https://bitaps.com/api/block/transactions/{$block}");
+        $response = static::getResponse("https://bitaps.com/api/block/transactions/{$block}");
+
+        $result = [];
+        if ($response && is_array($response)) {
+            foreach ($response as $item) {
+                $result[] = new BlockTransaction($item);
+            }
+            return $result;
+        } else {
+            return $response;
+        }
     }
 
     /**
@@ -513,15 +447,13 @@ class BitAps
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
      * @param string $message
      *
-     * @return mixed
-     * @example array(
-     *    'message',
-     *    'qrcode'
-     * )
+     * @return QrCode
      */
-    public function getQRCode($message)
+    public static function getQRCode($message)
     {
-        return $this->getResponse("https://bitaps.com/api/qrcode/{$message}");
+        $response = static::getResponse("https://bitaps.com/api/qrcode/{$message}");
+
+        return new QrCode($response);
     }
 
     /**
@@ -532,9 +464,9 @@ class BitAps
      *
      * @return string
      */
-    public function getQRCodePng($message)
+    public static function getQRCodePng($message)
     {
-        return Html::img("https://bitaps.com/api/qrcode/png/{$message}");
+        return "https://bitaps.com/api/qrcode/png/{$message}";
     }
 
     /**
@@ -548,21 +480,13 @@ class BitAps
      * По умолчанию: average
      * @param string $market
      *
-     * @return mixed
-     * @example array(
-     *   'usd',
-     *   'fx_rates' => [
-     *      'eur',
-     *      'rub',
-     *      'cny',
-     *   ],
-     *   'market',
-     *   'timestamp'
-     * )
+     * @return Ticker
      */
-    public function getTicker($market = 'average')
+    public static function getTicker($market = 'average')
     {
-        return $this->getResponse("https://bitaps.com/api/ticker/{$market}");
+        $response = static::getResponse("https://bitaps.com/api/ticker/{$market}");
+
+        return new Ticker($response);
     }
 
     /**
@@ -575,20 +499,12 @@ class BitAps
      * По умолчанию: average
      * @param string $market
      *
-     * @return mixed
-     * @example array(
-     *   'usd',
-     *   'fx_rates' => [
-     *      'eur',
-     *      'rub',
-     *      'cny',
-     *   ],
-     *   'market',
-     *   'timestamp'
-     * )
+     * @return Ticker
      */
-    public function getPriceHistory($timestamp, $market = 'average')
+    public static function getPriceHistory($timestamp, $market = 'average')
     {
-        return $this->getResponse("https://bitaps.com/api/price/history/{$timestamp}/{$market}");
+        $response = static::getResponse("https://bitaps.com/api/price/history/{$timestamp}/{$market}");
+
+        return new Ticker($response);
     }
 }
