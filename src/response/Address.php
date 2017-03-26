@@ -10,17 +10,45 @@ use bitaps\base\Object;
  */
 class Address extends Object
 {
-    public $balance;
-    public $confirmed_balance;
+    /** @var int */
     public $received;
-    public $sent;
-    public $pending;
-    public $multisig_received;
-    public $multisig_sent;
-    public $tx_received;
-    public $tx_sent;
-    public $tx_multisig_received;
+
+    /** @var int */
     public $tx_multisig_sent;
-    public $tx_unconfirmed;
+
+    /** @var int */
     public $tx_invalid;
+
+    /** @var int */
+    public $tx_multisig_received;
+
+    /** @var int */
+    public $sent;
+
+    /** @var int */
+    public $tx_unconfirmed;
+
+    /** @var int */
+    public $multisig_received;
+
+    /** @var int */
+    public $pending;
+
+    /** @var int */
+    public $tx_received;
+
+    /** @var int */
+    public $tx_total;
+
+    /** @var int */
+    public $confirmed_balance;
+
+    /** @var int */
+    public $multisig_sent;
+
+    /** @var int */
+    public $tx_sent;
+
+    /** @var int */
+    public $balance;
 }
