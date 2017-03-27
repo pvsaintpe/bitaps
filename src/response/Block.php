@@ -55,6 +55,14 @@ class Block extends Object
     }
 
     /**
+     * @return BlockTransaction[]
+     */
+    public function getTransactions()
+    {
+        return BitAps::getBlockTransactions($this->hash);
+    }
+
+    /**
      * @return Block
      */
     public function getNextBlock()

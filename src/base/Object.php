@@ -6,6 +6,9 @@ use phpDocumentor\Reflection\DocBlock;
 
 class Object
 {
+    /** @var array */
+    protected $otherAttributes = [];
+
     /**
      * Object constructor.
      * @param array $config
@@ -14,9 +17,15 @@ class Object
     {
         $reflection = new \ReflectionClass($this);
 
+        $filled = false;
         foreach ($config as $attribute => $value) {
-            $this->{$attribute} = $value;
+            if (!property_exists($this, $attribute)) {
+                $this->otherAttributes[$attribute] = $value;
+                continue;
+            }
 
+            $this->{$attribute} = $value;
+            $filled = true;
             $property = $reflection->getProperty($attribute);
 
             if (!($doc = new DocBlock($property->getDocComment()))) {
@@ -46,5 +55,23 @@ class Object
                 }
             }
         }
+
+        if (!$filled) {
+            $index = 0;
+            foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                if (isset($config[$index])) {
+                    $this->{$property->getName()} = $config[$index];
+                }
+                $index++;
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getOtherAttributes()
+    {
+        return $this->otherAttributes;
     }
 }

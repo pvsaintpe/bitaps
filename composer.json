@@ -1,6 +1,6 @@
 {
     "name": "pvsaintpe/bitaps",
-    "description": "BitAps Extension",
+    "description": "Component for BitAps API",
     "keywords": [
         "bitaps",
         "bitcoin",
@@ -20,5 +20,5 @@
             "bitaps\\": "src/"
         }
     },
-    "version": "1.0.10"
+    "version": "1.0.11"
 }

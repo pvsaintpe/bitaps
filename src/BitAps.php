@@ -2,6 +2,7 @@
 
 namespace bitaps;
 
+use bitaps\callback\Response;
 use bitaps\response\Address;
 use bitaps\response\AddressTransaction;
 use bitaps\response\Block;
@@ -24,8 +25,7 @@ use bitaps\response\TxRate;
 /**
  * Class BitAps
  *
- * @see https://bitaps.com/ru/api
- *
+ * @author Veselov Pavel
  * @package bitaps\components
  */
 class BitAps
@@ -49,42 +49,110 @@ class BitAps
     CONST AMOUNT_LIMIT = 0.0003;
 
     /**
+     * Обработка колбэков
+     *
+     * Для подтверждения ответа на наши колбэки, ваш сервер должен вернуть Invoice в ответ, в обычном текстовом формате.
+     * В случае не верного ответа нашему серверу, обратный отклик будет отправлен повторно с каждым новым блоком в течение трёх дней.
+     * Если ваш сервер долгое время не отвечает на отклики, то мы вправе заблокировать приём платежей для вашего сервиса.
+     *
+     * @param array $post
+     * @return Response
+     */
+    public static function getCallbackResponse($post = [])
+    {
+        return new Response($post);
+    }
+
+    /**
      * @param string $url
      * @param array $params []
      * @param array|boolean $post false
      *
-     * @todo доделать обработку ошибок
-     * @todo возможно GET-запросы тоже через cURL сделать
-     *
-     * @return mixed
+     * @return mixed|Error
      */
     public static function getResponse($url, $params = [], $post = false)
     {
         $url .= (($queryString = http_build_query($params)) ? '?' . $queryString : '');
 
-        if ($post === false) {
-            $response = file_get_contents($url);
-        } else {
-            $post = array_filter($post, function($value) {
-                return ($value === false) ? false : true;
-            });
+        $post = array_filter($post, function($value) {
+            return ($value === false) ? false : true;
+        });
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            $response = curl_exec($ch);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_POST, !$post ? 0 : 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $response = curl_exec($ch);
+
+        if ($response && is_array($response) && isset($response['error_code'])) {
+            return new Error($response);
         }
 
         return json_decode($response, true);
     }
 
     /**
+     * Создать смартконтракт (оплата по списку получателей)
+     *
+     * @param $callback
+     * @param $payment_list
+     * @param string $type
+     * @param int $confirmations
+     * @param string $fee_level
+     *
+     * @return SmartContract
+     */
+    public static function createSmartContractWithPaymentList(
+        $callback,
+        $payment_list,
+        $type = 'payment_list',
+        $confirmations = 3,
+        $fee_level = 'low'
+    )
+    {
+        return static::createPaymentSmartContract(
+            $callback,
+            compact('type', 'payment_list'),
+            $confirmations,
+            $fee_level
+        );
+    }
+
+    /**
+     * Создать смартконтракт (поддержание баланса на горячем кошельке)
+     *
+     * @param $callback
+     * @param $hot_wallet
+     * @param $cold_storage
+     * @param $amount
+     * @param int $confirmations
+     * @param string $fee_level
+     *
+     * @return SmartContract
+     */
+    public static function createSmartContractWithHotWallet(
+        $callback,
+        $hot_wallet,
+        $cold_storage,
+        $amount,
+        $confirmations = 3,
+        $fee_level = 'low'
+    )
+    {
+        return static::createPaymentSmartContract(
+            $callback,
+            compact('hot_wallet', 'cold_storage', 'amount'),
+            $confirmations,
+            $fee_level
+        );
+    }
+
+    /**
      * Создать смартконтракт (поддержание баланса на горячем кошельке):
-     * Создать смартконтракт (оплата по списку получателей):
+     * :
      *
      * обратный отклик на указанную ссылку (urlencoded callback - стандарт кодирования строки URL)
      * @param string {callback}	URL
@@ -99,7 +167,7 @@ class BitAps
      *
      * @return SmartContract
      */
-    public static function createPaymentSmartContract($callback, $post, $confirmations = 3, $fee_level = 'low')
+    protected static function createPaymentSmartContract($callback, $post, $confirmations = 3, $fee_level = 'low')
     {
         $response = static::getResponse(
             "https://bitaps.com/api/create/payment/smartcontract/" . urlencode($callback),
@@ -460,7 +528,7 @@ class BitAps
      * Получить QR код для сообщения или адреса, в формате PNG
      *
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
-     * @param $message
+     * @param string $message
      *
      * @return string
      */

@@ -74,4 +74,20 @@ class Cheque extends Object
     {
         return BitAps::useRedeemCode($this->redeem_code, $address, $amount, $fee_level, $custom_fee);
     }
+
+    /**
+     * @return QrCode
+     */
+    public function getQrCode()
+    {
+        return BitAps::getQRCode($this->address);
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodePng()
+    {
+        return BitAps::getQRCodePng($this->address);
+    }
 }

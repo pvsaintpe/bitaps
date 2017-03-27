@@ -3,6 +3,7 @@
 namespace bitaps\response;
 
 use bitaps\base\Object;
+use bitaps\BitAps;
 
 /**
  * Class TransactionRawResult
@@ -20,4 +21,11 @@ class TransactionRawResult extends Object
      */
     public $hex;
 
+    /**
+     * @return Transaction
+     */
+    public function getTransaction()
+    {
+        return BitAps::getTransaction($this->hash);
+    }
 }
