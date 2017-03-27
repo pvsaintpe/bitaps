@@ -14,11 +14,14 @@
             "email": "pvsaintpe@mail.ru"
         }
     ],
+    "require": {
+        "phpdocumentor/reflection": "3.0.*"
+    },
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "bitaps\\": "src/"
         }
     },
-    "version": "1.0.12"
+    "version": "1.0.13"
 }
