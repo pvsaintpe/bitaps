@@ -11,14 +11,7 @@ use bitaps\BitAps;
  */
 class TransactionRawResult extends Object
 {
-    /**
-     * @var string
-     */
     public $hash;
-
-    /**
-     * @var string
-     */
     public $hex;
 
     /**

@@ -7,43 +7,18 @@ use bitaps\BitAps;
 
 class Block extends Object
 {
-    /** @var int */
     public $version;
-
-    /** @var string */
     public $previuos_block_hash;
-
-    /** @var string */
     public $next_block_hash;
-
-    /** @var int */
     public $height;
-
-    /** @var int */
     public $bits;
-
-    /** @var int */
     public $size;
-
-    /** @var string */
     public $miner;
-
-    /** @var string */
     public $merkleroot;
-
-    /** @var int */
     public $transactions;
-
-    /** @var string */
     public $hash;
-
-    /** @var int */
     public $timestamp;
-
-    /** @var int */
     public $nonce;
-
-    /** @var string */
     public $coinbase;
 
     /**

@@ -6,7 +6,6 @@ use phpDocumentor\Reflection\DocBlock;
 
 class Object
 {
-    /** @var array */
     protected $otherAttributes = [];
 
     /**

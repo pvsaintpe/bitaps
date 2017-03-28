@@ -7,10 +7,7 @@ use bitaps\BitAps;
 
 class QrCode extends Object
 {
-    /** @var string */
     public $message;
-
-    /** @var string */
     public $qrcode;
 
     /**

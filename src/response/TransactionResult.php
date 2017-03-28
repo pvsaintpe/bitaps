@@ -11,9 +11,6 @@ use bitaps\BitAps;
  */
 class TransactionResult extends Object
 {
-    /**
-     * @var string
-     */
     public $tx_hash;
 
     /**

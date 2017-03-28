@@ -7,31 +7,14 @@ use bitaps\BitAps;
 
 class Response extends Object
 {
-    /** @var string */
     public $tx_hash;
-
-    /** @var string */
     public $address;
-
-    /** @var string */
     public $invoice;
-
-    /** @var string */
     public $code;
-
-    /** @var int */
     public $amount;
-
-    /** @var int */
     public $confirmations;
-
-    /** @var string */
     public $payout_tx_hash;
-
-    /** @var int */
     public $payout_miner_fee;
-
-    /** @var int */
     public $payout_service_fee;
 
     /**

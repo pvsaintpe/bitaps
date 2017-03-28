@@ -74,16 +74,21 @@ class BitAps
     {
         $url .= (($queryString = http_build_query($params)) ? '?' . $queryString : '');
 
-        $post = array_filter($post, function($value) {
-            return ($value === false) ? false : true;
-        });
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POST, !$post ? 0 : 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+
+        if (is_array($post) && !empty($post)) {
+            $post = array_filter($post, function ($value) {
+                return ($value === false) ? false : true;
+            });
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+        } else {
+            curl_setopt($ch, CURLOPT_POST, 0);
+        }
+
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $response = curl_exec($ch);
 

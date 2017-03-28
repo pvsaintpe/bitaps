@@ -11,28 +11,9 @@ use bitaps\BitAps;
  */
 class RedeemCode extends Object
 {
-    /**
-     * неподтверждённый баланс
-     * @var int
-     */
     public $pending_balance;
-
-    /**
-     * оплаченная сумма
-     * @var int
-     */
     public $paid_out;
-
-    /**
-     * текущий баланс
-     * @var int
-     */
     public $balance;
-
-    /**
-     * адрес получателя
-     * @var string
-     */
     public $address;
 
     /**

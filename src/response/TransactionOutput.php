@@ -7,13 +7,8 @@ use bitaps\BitAps;
 
 class TransactionOutput extends Object
 {
-    /** @var int */
     public $output_index;
-
-    /** @var int */
     public $amount;
-
-    /** @var array */
     public $address;
 
     /**

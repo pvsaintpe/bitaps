@@ -18,22 +18,8 @@ use bitaps\BitAps;
  */
 class Cheque extends Object
 {
-    /**
-     * адрес для приёма оплаты
-     * @var string
-     */
     public $address;
-
-    /**
-     * код платежа
-     * @var string
-     */
     public $redeem_code;
-
-    /**
-     * счёт
-     * @var string
-     */
     public $invoice;
 
     /**

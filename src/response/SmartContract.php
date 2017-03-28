@@ -10,22 +10,8 @@ use bitaps\BitAps;
  */
 class SmartContract extends Object
 {
-    /**
-     * адрес для приёма оплаты
-     * @var string
-     */
     public $address;
-
-    /**
-     * код платежа
-     * @var string
-     */
     public $payment_code;
-
-    /**
-     * счёт
-     * @var string
-     */
     public $invoice;
 
     /**

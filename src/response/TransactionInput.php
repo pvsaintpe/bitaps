@@ -17,44 +17,13 @@ class TransactionInput extends Object
      */
     public $script;
 
-    /**
-     * @var string
-     */
     public $transaction_hash;
-
-    /**
-     * @var string
-     */
     public $hash;
-
-    /**
-     * @var string
-     */
     public $sequence;
-
-    /**
-     * @var int
-     */
     public $amount;
-
-    /**
-     * @var int
-     */
     public $input_index;
-
-    /**
-     * @var string
-     */
     public $output_index;
-
-    /**
-     * @var string
-     */
     public $out_index;
-
-    /**
-     * @var array
-     */
     public $address;
 
     /**

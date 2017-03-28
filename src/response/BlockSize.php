@@ -6,6 +6,5 @@ use bitaps\base\Object;
 
 class BLockSize extends Object
 {
-    /** @var int */
     public $blocksize;
 }

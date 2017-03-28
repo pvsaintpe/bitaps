@@ -11,13 +11,8 @@ use bitaps\BitAps;
  */
 class BlockTransaction extends Object
 {
-    /** @var string */
     public $transaction;
-
-    /** @var string */
     public $block_data_hex;
-
-    /** @var int */
     public $amount;
 
     /**
