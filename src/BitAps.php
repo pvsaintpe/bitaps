@@ -67,8 +67,8 @@ class BitAps
      * @param string $url
      * @param array $params []
      * @param array|boolean $post false
-     *
-     * @return mixed|Error
+     * @return mixed
+     * @throws Exception
      */
     public static function getResponse($url, $params = [], $post = false)
     {
@@ -94,7 +94,7 @@ class BitAps
         $response = json_decode($response, true);
 
         if ($response && is_array($response) && isset($response['error_code'])) {
-            return new Error($response);
+            throw new Exception($response['message'], $response['error_code']);
         }
 
         return $response;
