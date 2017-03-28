@@ -91,12 +91,13 @@ class BitAps
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $response = curl_exec($ch);
+        $response = json_decode($response, true);
 
         if ($response && is_array($response) && isset($response['error_code'])) {
             return new Error($response);
         }
 
-        return json_decode($response, true);
+        return $response;
     }
 
     /**
