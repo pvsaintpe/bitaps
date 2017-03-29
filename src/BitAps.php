@@ -519,7 +519,7 @@ class BitAps
      * Получить QR код для сообщения или адреса, в формате SVG (векторная графика) в текстовом формате base64
      *
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
-     * @param string $message
+     * @param string $address
      *
      * @param int $amount
      * @param string $label
@@ -527,9 +527,9 @@ class BitAps
      *
      * @return QrCode
      */
-    public static function getQRCode($message, $amount = null, $label = null, $message = null)
+    public static function getQRCode($address, $amount = null, $label = null, $message = null)
     {
-        $message = static::getMessage($message, $amount, $label, $message);
+        $message = static::getMessage($address, $amount, $label, $message);
         $response = static::getResponse("https://bitaps.com/api/qrcode/{$message}");
 
         return new QrCode($response);
@@ -539,7 +539,7 @@ class BitAps
      * Получить QR код для сообщения или адреса, в формате PNG
      *
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
-     * @param string $message
+     * @param string $address
      *
      * @param int $amount
      * @param string $label
@@ -547,23 +547,23 @@ class BitAps
      *
      * @return string
      */
-    public static function getQRCodePng($message, $amount = null, $label = null, $message = null)
+    public static function getQRCodePng($address, $amount = null, $label = null, $message = null)
     {
-        $message = static::getMessage($message, $amount, $label, $message);
+        $message = static::getMessage($address, $amount, $label, $message);
         return "https://bitaps.com/api/qrcode/png/{$message}";
     }
 
     /**
-     * @param string $message
+     * @param string $address
      * @param int $amount
      * @param string $label
      * @param string $message
      *
      * @return string
      */
-    private static function getMessage($message, $amount = null, $label = null, $message = null)
+    private static function getMessage($address, $amount = null, $label = null, $message = null)
     {
-        return urlencode("bitcoin:{$message}?" . join(compact('amount', 'label', 'message')));
+        return urlencode("bitcoin:{$address}?" . join(compact('amount', 'label', 'message')));
     }
 
     /**
