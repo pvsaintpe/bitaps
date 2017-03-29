@@ -37,19 +37,25 @@ class RedeemCode extends Object
     }
 
     /**
+     * @param int $amount
+     * @param string $label
+     * @param string $message
      * @return QrCode
      */
-    public function getQrCode()
+    public function getQrCode($amount = null, $label = null, $message = null)
     {
-        return BitAps::getQRCode($this->address);
+        return BitAps::getQRCode($this->address, $amount, $label, $message);
     }
 
     /**
+     * @param int $amount
+     * @param string $label
+     * @param string $message
      * @return string
      */
-    public function getQrCodePng()
+    public function getQrCodePng($amount = null, $label = null, $message = null)
     {
-        return BitAps::getQRCodePng($this->address);
+        return BitAps::getQRCodePng($this->address, $amount, $label, $message);
     }
 
     /**

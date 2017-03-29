@@ -521,10 +521,15 @@ class BitAps
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
      * @param string $message
      *
+     * @param int $amount
+     * @param string $label
+     * @param string $message
+     *
      * @return QrCode
      */
-    public static function getQRCode($message)
+    public static function getQRCode($message, $amount = null, $label = null, $message = null)
     {
+        $message = static::getMessage($message, $amount, $label, $message);
         $response = static::getResponse("https://bitaps.com/api/qrcode/{$message}");
 
         return new QrCode($response);
@@ -536,11 +541,29 @@ class BitAps
      * кодированная строка сообщения (urlencoded) или Биткоин адрес, максимум 256 символов
      * @param string $message
      *
+     * @param int $amount
+     * @param string $label
+     * @param string $message
+     *
      * @return string
      */
-    public static function getQRCodePng($message)
+    public static function getQRCodePng($message, $amount = null, $label = null, $message = null)
     {
+        $message = static::getMessage($message, $amount, $label, $message);
         return "https://bitaps.com/api/qrcode/png/{$message}";
+    }
+
+    /**
+     * @param string $message
+     * @param int $amount
+     * @param string $label
+     * @param string $message
+     *
+     * @return string
+     */
+    private static function getMessage($message, $amount = null, $label = null, $message = null)
+    {
+        return "bitcoin:{$message}?" . join(compact('amount', 'label', 'message'));
     }
 
     /**

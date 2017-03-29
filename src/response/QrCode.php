@@ -11,10 +11,13 @@ class QrCode extends Object
     public $qrcode;
 
     /**
+     * @param int $amount
+     * @param string $label
+     * @param string $message
      * @return string
      */
-    public function getQrCodePng()
+    public function getQrCodePng($amount = null, $label = null, $message = null)
     {
-        return BitAps::getQRCodePng($this->message);
+        return BitAps::getQRCodePng($this->message, $amount, $label, $message);
     }
 }
