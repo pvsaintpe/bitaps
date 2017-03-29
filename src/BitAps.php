@@ -563,7 +563,7 @@ class BitAps
      */
     private static function getMessage($address, $amount = null, $label = null, $message = null)
     {
-        return urlencode("bitcoin:{$address}?" . join(compact('amount', 'label', 'message')));
+        return urlencode("bitcoin:{$address}?" . http_build_query(compact('amount', 'label', 'message')));
     }
 
     /**
