@@ -33,4 +33,19 @@ class SmartContract extends Object
         return BitAps::getAddressTransactions($this->address, $offset, $type, $status);
     }
 
+    /**
+     * @return QrCode
+     */
+    public function getQrCode()
+    {
+        return BitAps::getQRCode($this->address);
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodePng()
+    {
+        return BitAps::getQRCodePng($this->address);
+    }
 }
