@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\DocBlock;
 class Object
 {
     protected $otherAttributes = [];
+    protected $config;
 
     /**
      * Object constructor.
@@ -17,40 +18,43 @@ class Object
         $reflection = new \ReflectionClass($this);
 
         $filled = false;
-        foreach ($config as $attribute => $value) {
-            if (!property_exists($this, $attribute)) {
-                $this->otherAttributes[$attribute] = $value;
-                continue;
-            }
 
-            $this->{$attribute} = $value;
-            $filled = true;
-            $property = $reflection->getProperty($attribute);
-
-            if (!($doc = new DocBlock($property->getDocComment()))) {
-                continue;
-            }
-
-            /** @var DocBlock\Tag\VarTag $tag */
-            if (!($tags = $doc->getTagsByName('var'))) {
-                continue;
-            }
-            $tag = $tags[0];
-            $type = $tag->getType();
-
-            if (strpos($type, '[]') !== false) {
-                $class = str_replace('[]', '', $tag->getType());
-                if (!class_exists($class)) {
+        if (is_array($config) && count($config) > 0) {
+            foreach ($config as $attribute => $value) {
+                if (!property_exists($this, $attribute)) {
+                    $this->otherAttributes[$attribute] = $value;
                     continue;
                 }
 
-                $this->{$attribute} = [];
-                foreach ($value as $item) {
-                    $this->{$attribute}[] = new $class($item);
+                $this->{$attribute} = $value;
+                $filled = true;
+                $property = $reflection->getProperty($attribute);
+
+                if (!($doc = new DocBlock($property->getDocComment()))) {
+                    continue;
                 }
-            } else {
-                if (class_exists($type)) {
-                    $this->{$attribute} = new $type($value);
+
+                /** @var DocBlock\Tag\VarTag $tag */
+                if (!($tags = $doc->getTagsByName('var'))) {
+                    continue;
+                }
+                $tag = $tags[0];
+                $type = $tag->getType();
+
+                if (strpos($type, '[]') !== false) {
+                    $class = str_replace('[]', '', $tag->getType());
+                    if (!class_exists($class)) {
+                        continue;
+                    }
+
+                    $this->{$attribute} = [];
+                    foreach ($value as $item) {
+                        $this->{$attribute}[] = new $class($item);
+                    }
+                } else {
+                    if (class_exists($type)) {
+                        $this->{$attribute} = new $type($value);
+                    }
                 }
             }
         }
@@ -58,11 +62,16 @@ class Object
         if (!$filled) {
             $index = 0;
             foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-                if (isset($config[$index])) {
+                if (is_array($config) && isset($config[$index])) {
                     $this->{$property->getName()} = $config[$index];
+                    $filled = true;
                 }
                 $index++;
             }
+        }
+
+        if (!$filled) {
+            $this->config = $config;
         }
     }
 
