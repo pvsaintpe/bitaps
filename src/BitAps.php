@@ -157,7 +157,10 @@ class BitAps
      * @param $callback
      * @param $hot_wallet
      * @param $cold_storage
-     * @param $amount
+     * @param $type_amount
+     * @param $hot_wallet_amount
+     * @param $hot_wallet_quota
+     * @param string $type
      * @param int $confirmations
      * @param string $fee_level
      *
@@ -167,14 +170,22 @@ class BitAps
         $callback,
         $hot_wallet,
         $cold_storage,
-        $amount,
+        $type_amount = 'hot_wallet_amount',
+        $hot_wallet_amount,
+        $hot_wallet_quota,
+        $type = 'hot_wallet',
         $confirmations = 3,
         $fee_level = 'low'
     )
     {
         return static::createPaymentSmartContract(
             $callback,
-            compact('hot_wallet', 'cold_storage', 'amount'),
+            compact(
+                'type',
+                'hot_wallet',
+                'cold_storage',
+                ($type_amount == 'hot_wallet_amount') ? 'hot_wallet_amount' : 'hot_wallet_quota'
+            ),
             $confirmations,
             $fee_level
         );
