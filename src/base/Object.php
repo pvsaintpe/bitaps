@@ -12,7 +12,9 @@ if (class_exists('\phpDocumentor\Reflection\DocBlock')) {
 
 class Object
 {
-    protected $otherAttributes = [];
+    protected $otherAttributes = [
+        
+    ];
     protected $config;
 
     /**
