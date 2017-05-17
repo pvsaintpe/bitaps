@@ -4,6 +4,12 @@ namespace bitaps\response;
 
 use bitaps\base\Object;
 
+if (class_exists('\bitaps\base\Object')) {
+
+} else {
+    require_once __DIR__ . '/../base/Object.php';
+}
+
 /**
  * Class Address
  * @package bitaps\response

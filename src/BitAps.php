@@ -22,6 +22,30 @@ use bitaps\response\TransactionRawResult;
 use bitaps\response\TransactionResult;
 use bitaps\response\TxRate;
 
+if (class_exists('\bitaps\response\AddressTransaction')) {
+
+} else {
+    require_once __DIR__ . '/response/Address.php';
+    require_once __DIR__ . '/response/AddressTransaction.php';
+    require_once __DIR__ . '/response/Block.php';
+    require_once __DIR__ . '/response/BLockSize.php';
+    require_once __DIR__ . '/response/BlockTime.php';
+    require_once __DIR__ . '/response/BlockTransaction.php';
+    require_once __DIR__ . '/response/Cheque.php';
+    require_once __DIR__ . '/response/Difficulty.php';
+    require_once __DIR__ . '/response/Fee.php';
+    require_once __DIR__ . '/response/HashRate.php';
+    require_once __DIR__ . '/response/QrCode.php';
+    require_once __DIR__ . '/response/RedeemCode.php';
+    require_once __DIR__ . '/response/SmartContract.php';
+    require_once __DIR__ . '/response/Ticker.php';
+    require_once __DIR__ . '/response/Transaction.php';
+    require_once __DIR__ . '/response/TransactionRawResult.php';
+    require_once __DIR__ . '/response/TransactionResult.php';
+    require_once __DIR__ . '/response/TxRate.php';
+    require_once __DIR__ . '/callback/Response.php';
+}
+
 /**
  * Class BitAps
  *
