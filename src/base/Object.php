@@ -4,12 +4,6 @@ namespace bitaps\base;
 
 use phpDocumentor\Reflection\DocBlock;
 
-if (class_exists('\phpDocumentor\Reflection\DocBlock')) {
-
-} else {
-    require_once __DIR__ . '/../../../../vendor/phpdocumentor/reflection-dockblock/src/phpDocumentor/Reflection/DocBlock.php';
-}
-
 class Object
 {
     protected $otherAttributes = [
@@ -41,7 +35,6 @@ class Object
                     continue;
                 }
 
-                /** @var DocBlock\Tag\VarTag $tag */
                 if (!($tags = $doc->getTagsByName('var'))) {
                     continue;
                 }
