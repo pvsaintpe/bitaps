@@ -12,6 +12,8 @@ use bitaps\BitAps;
 class TransactionResult extends Object
 {
     public $tx_hash;
+    public $fee;
+    public $status;
 
     /**
      * @return Transaction
