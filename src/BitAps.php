@@ -49,6 +49,21 @@ class BitAps
     CONST AMOUNT_LIMIT = 0.0003;
 
     /**
+     * @var array
+     */
+    protected static $timing = [];
+
+    /**
+     * @return string
+     */
+    public static function getTiming()
+    {
+        $timing = join(PHP_EOL, static::$timing);
+        static::$timing = [];
+        return $timing;
+    }
+
+    /**
      * Обработка колбэков
      *
      * Для подтверждения ответа на наши колбэки, ваш сервер должен вернуть Invoice в ответ, в обычном текстовом формате.
@@ -60,6 +75,7 @@ class BitAps
      */
     public static function getCallbackResponse($post = [])
     {
+        static::setTiming(__METHOD__);
         return new Response($post);
     }
 
@@ -72,6 +88,7 @@ class BitAps
      */
     public static function getResponse($url, $params = [], $post = false)
     {
+        static::setTiming(__METHOD__ . ' start');
         $url .= (($queryString = http_build_query($params)) ? '?' . $queryString : '');
 
         $ch = curl_init();
@@ -96,8 +113,17 @@ class BitAps
         if ($response && is_array($response) && isset($response['error_code'])) {
             throw new Exception($response['message'], $response['error_code']);
         }
+        static::setTiming(__METHOD__ . ' end');
 
         return $response;
+    }
+
+    /**
+     * @param $event
+     */
+    protected static function setTiming($event)
+    {
+        static::$timing[] = "{$event}: " . time();
     }
 
     /**
@@ -119,6 +145,7 @@ class BitAps
         $fee_level = 'low'
     )
     {
+        static::setTiming(__METHOD__);
         return static::createPaymentSmartContract(
             $callback,
             compact('type', 'payment_list'),
@@ -154,6 +181,7 @@ class BitAps
         $fee_level = 'low'
     )
     {
+        static::setTiming(__METHOD__);
         return static::createPaymentSmartContract(
             $callback,
             compact(
@@ -186,13 +214,18 @@ class BitAps
      */
     protected static function createPaymentSmartContract($callback, $post, $confirmations = 3, $fee_level = 'low')
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/create/payment/smartcontract/" . urlencode($callback),
             compact('confirmations', 'fee_level'),
             $post
         );
 
-        return new SmartContract($response);
+        static::setTiming('new SmartContract init');
+        $smartContract = new SmartContract($response);
+        static::setTiming('SmartContract end');
+
+        return $smartContract;
     }
 
     /**
@@ -214,12 +247,17 @@ class BitAps
      */
     public static function createPaymentAddress($payout_address, $callback, $confirmations = 3, $fee_level = 'low')
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/create/payment/{$payout_address}/" . urlencode($callback),
             compact('confirmations', 'fee_level')
         );
 
-        return new SmartContract($response);
+        static::setTiming('new SmartContract init');
+        $smartContract = new SmartContract($response);
+        static::setTiming('SmartContract end');
+
+        return $smartContract;
     }
 
     /**
@@ -232,6 +270,7 @@ class BitAps
      */
     public static function createCheque($confirmations = 3)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/create/redeemcode",
             compact('confirmations')
@@ -250,6 +289,7 @@ class BitAps
      */
     public static function getRedeemCode($redeemcode)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/get/redeemcode/info",
             [],
@@ -282,6 +322,7 @@ class BitAps
      */
     public static function useRedeemCode($redeemcode, $address, $amount, $fee_level = 'low', $custom_fee = false)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/use/redeemcode",
             [],
@@ -310,6 +351,7 @@ class BitAps
      */
     public static function useRedeemCodeList($redeemcode, $payment_list, $data = null, $fee_level = 'low')
     {
+        static::setTiming(__METHOD__);
         $data = bin2hex($data);
         $response = static::getResponse(
             "https://bitaps.com/api/use/redeemcode/list",
@@ -330,6 +372,7 @@ class BitAps
      */
     public static function getTransaction($tx_hash)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/transaction/{$tx_hash}");
 
         return new Transaction($response);
@@ -345,6 +388,7 @@ class BitAps
      */
     public static function getRawTransaction($tx_hash)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/raw/transaction/{$tx_hash}");
 
         return new TransactionRawResult($response);
@@ -360,6 +404,7 @@ class BitAps
      */
     public static function getAddress($address)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/address/" . $address);
 
         return new Address($response);
@@ -389,6 +434,7 @@ class BitAps
      */
     public static function getAddressTransactions($address, $offset = 0, $type = 'all', $status = 'all')
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse(
             "https://bitaps.com/api/address/transactions/{$address}/{$offset}/{$type}/{$status}"
         );
@@ -411,6 +457,7 @@ class BitAps
      */
     public static function getDifficulty()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/difficulty");
 
         return new Difficulty($response);
@@ -423,6 +470,7 @@ class BitAps
      */
     public static function getHashRate()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/hashrate");
 
         return new HashRate($response);
@@ -435,6 +483,7 @@ class BitAps
      */
     public static function getBlockTime()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/blocktime");
 
         return new BlockTime($response);
@@ -459,6 +508,7 @@ class BitAps
      */
     public static function getTxRate()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/txrate");
 
         return new TxRate($response);
@@ -471,6 +521,7 @@ class BitAps
      */
     public static function getFee()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/fee");
 
         return new Fee($response);
@@ -486,6 +537,7 @@ class BitAps
      */
     public static function getBlock($block)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/block/{$block}");
 
         return new Block($response);
@@ -498,6 +550,7 @@ class BitAps
      */
     public static function getBlockLatest()
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/block/latest");
 
         return new Block($response);
@@ -513,6 +566,7 @@ class BitAps
      */
     public static function getBlockTransactions($block)
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/block/transactions/{$block}");
 
         $result = [];
@@ -540,6 +594,7 @@ class BitAps
      */
     public static function getQRCode($address, $amount = null, $label = null, $message = null)
     {
+        static::setTiming(__METHOD__);
         $message = static::getMessage($address, $amount, $label, $message);
         $response = static::getResponse("https://bitaps.com/api/qrcode/{$message}");
 
@@ -560,6 +615,7 @@ class BitAps
      */
     public static function getQRCodePng($address, $amount = null, $label = null, $message = null)
     {
+        static::setTiming(__METHOD__);
         $message = static::getMessage($address, $amount, $label, $message);
         return "https://bitaps.com/api/qrcode/png/{$message}";
     }
@@ -574,6 +630,7 @@ class BitAps
      */
     private static function getMessage($address, $amount = null, $label = null, $message = null)
     {
+        static::setTiming(__METHOD__);
         if (strlen(join('', [$amount, $label, $message])) >= 1) {
             return urlencode("bitcoin:{$address}?" . http_build_query(compact('amount', 'label', 'message')));
         }
@@ -591,6 +648,7 @@ class BitAps
      */
     public static function getBitcoinUrl($address, $amount = null, $label = null, $message = null)
     {
+        static::setTiming(__METHOD__);
         if (strlen(join('', [$amount, $label, $message])) >= 1) {
             return "bitcoin://{$address}?" . http_build_query(compact('amount', 'label', 'message'));
         }
@@ -613,6 +671,7 @@ class BitAps
      */
     public static function getTicker($market = 'average')
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/ticker/{$market}");
 
         return new Ticker($response);
@@ -632,6 +691,7 @@ class BitAps
      */
     public static function getPriceHistory($timestamp, $market = 'average')
     {
+        static::setTiming(__METHOD__);
         $response = static::getResponse("https://bitaps.com/api/price/history/{$timestamp}/{$market}");
 
         return new Ticker($response);
