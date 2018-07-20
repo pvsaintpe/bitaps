@@ -2,13 +2,13 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
  * @package response
  */
-class SmartContract extends Object
+class SmartContract extends BaseObject
 {
     public $address;
     public $payment_code;

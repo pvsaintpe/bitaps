@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class Script extends Object
+class Script extends BaseObject
 {
     public $type;
     public $hex;

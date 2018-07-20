@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class BLockSize extends Object
+class BLockSize extends BaseObject
 {
     public $blocksize;
 }

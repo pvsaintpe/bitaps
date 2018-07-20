@@ -2,14 +2,14 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
  * Class RedeemCode
  * @package bitaps\response
  */
-class RedeemCode extends Object
+class RedeemCode extends BaseObject
 {
     public $pending_balance;
     public $paid_out;

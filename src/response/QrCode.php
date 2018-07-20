@@ -2,10 +2,10 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class QrCode extends Object
+class QrCode extends BaseObject
 {
     public $message;
     public $qrcode;

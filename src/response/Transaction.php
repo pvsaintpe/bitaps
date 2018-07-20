@@ -2,10 +2,10 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class Transaction extends Object
+class Transaction extends BaseObject
 {
     public $size;
     public $locktime;

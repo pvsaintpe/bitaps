@@ -2,7 +2,7 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
@@ -16,7 +16,7 @@ use bitaps\BitAps;
  *
  * @package response
  */
-class Cheque extends Object
+class Cheque extends BaseObject
 {
     public $address;
     public $redeem_code;

@@ -2,13 +2,13 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
 /**
  * Class Address
  * @package bitaps\response
  */
-class Address extends Object
+class Address extends BaseObject
 {
     public $received;
     public $tx_multisig_sent;

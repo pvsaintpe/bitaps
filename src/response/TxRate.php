@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class TxRate extends Object
+class TxRate extends BaseObject
 {
     public $tx_rate;
 }

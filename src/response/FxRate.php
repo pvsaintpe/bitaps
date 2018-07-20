@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class FxRate extends Object
+class FxRate extends BaseObject
 {
     public $eur;
     public $rub;

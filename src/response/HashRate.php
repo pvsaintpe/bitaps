@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class HashRate extends Object
+class HashRate extends BaseObject
 {
     public $hashrate;
 }

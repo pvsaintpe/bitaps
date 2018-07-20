@@ -2,14 +2,14 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
  * Class BlockTransaction
  * @package bitaps\response
  */
-class BlockTransaction extends Object
+class BlockTransaction extends BaseObject
 {
     public $transaction;
     public $block_data_hex;

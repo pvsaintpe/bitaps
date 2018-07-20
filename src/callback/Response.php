@@ -2,10 +2,10 @@
 
 namespace bitaps\callback;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class Response extends Object
+class Response extends BaseObject
 {
     public $tx_hash;
     public $address;

@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class Fee extends Object
+class Fee extends BaseObject
 {
     public $high;
     public $medium;

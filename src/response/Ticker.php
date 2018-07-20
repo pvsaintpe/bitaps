@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class Ticker extends Object
+class Ticker extends BaseObject
 {
      public $usd;
 

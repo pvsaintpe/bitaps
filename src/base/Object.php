@@ -4,7 +4,7 @@ namespace bitaps\base;
 
 use phpDocumentor\Reflection\DocBlock;
 
-class Object
+class BaseObject
 {
     protected $otherAttributes = [
     ];

@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class BlockTime extends Object
+class BlockTime extends BaseObject
 {
     public $blocktime;
 }

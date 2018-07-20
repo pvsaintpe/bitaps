@@ -2,10 +2,10 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class TransactionOutput extends Object
+class TransactionOutput extends BaseObject
 {
     public $output_index;
     public $amount;

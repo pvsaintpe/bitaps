@@ -2,10 +2,10 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class TransactionInput extends Object
+class TransactionInput extends BaseObject
 {
     /**
      * @var \bitaps\response\Script[]

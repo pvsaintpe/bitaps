@@ -2,14 +2,14 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
  * Class TransactionRawResult
  * @package bitaps\response
  */
-class TransactionRawResult extends Object
+class TransactionRawResult extends BaseObject
 {
     public $hash;
     public $hex;

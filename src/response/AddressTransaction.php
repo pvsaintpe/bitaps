@@ -2,14 +2,14 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
 /**
  * Class AddressTransaction
  * @package bitaps\response
  */
-class AddressTransaction extends Object
+class AddressTransaction extends BaseObject
 {
     public $timestamp;
     public $hash;

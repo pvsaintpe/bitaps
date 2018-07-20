@@ -2,10 +2,10 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 use bitaps\BitAps;
 
-class Block extends Object
+class Block extends BaseObject
 {
     public $version;
     public $previuos_block_hash;

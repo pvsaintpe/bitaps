@@ -2,9 +2,9 @@
 
 namespace bitaps\response;
 
-use bitaps\base\Object;
+use bitaps\base\BaseObject;
 
-class Difficulty extends Object
+class Difficulty extends BaseObject
 {
     public $difficulty;
 }
