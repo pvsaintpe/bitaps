@@ -13,6 +13,16 @@ class SmartContract extends BaseObject
     public $address;
     public $payment_code;
     public $invoice;
+    public $currency;
+    public $amount;
+    public $share_type;
+    public $domain;
+    public $domain_hash;
+    public $confirmations;
+    public $callback_link;
+    public $forwarding_address_primary;
+    public $forwarding_address_secondary;
+    public $forwarding_address_primary_share;
 
     /**
      * @return Address
